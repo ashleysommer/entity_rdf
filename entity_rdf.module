@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * @file
+ * Module file for entity RDF.
+ */
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function entity_rdf_entity_property_info_alter(&$info) {
+  // Use dummy mappings for testing.
+  $mappings = _entity_rdf_mappings();
+
+  // Loop through all entity types and associate an RDF mapping to each
+  // property, field, and field property.
+  foreach ($info as $entity_type => &$entity_info) {
+    if (!empty($entity_info['bundles'])) {
+      foreach ($entity_info['bundles'] as $bundle => &$bundle_info) {
+        foreach ($bundle_info['properties'] as $field => &$field_info) {
+          // Attach RDF mapping for the field.
+          $key = implode(':', array($entity_type, $bundle, $field));
+          if (!empty($mappings[$key])) {
+            $field_info['rdf mapping'] = $mappings[$key];
+          }
+          // Attach RDF mapping for each field property.
+          if (!empty($field_info['property info'])) {
+            foreach ($field_info['property info'] as $field_property => &$field_property_info) {
+              $key = implode(':', array($entity_type, $bundle, $field, $field_property));
+              if (!empty($mappings[$key])) {
+                $field_property_info['rdf mapping'] = $mappings[$key];
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Dummy function to store the mappings until a better structure is defined.
+// @todo find a perfect structure that is exportable. granularity should
+// probably go to the field level.
+// @debate using rdf_properties to distinguish from all the other references to
+// properties we have in Drupal... predicate is what's used in D7 but that
+// terminology may be too obscure for developers, though on the other hand
+// it's a clear way to differentiate from the overly used 'properties'.
+function _entity_rdf_mappings() {
+  return array(
+    'node:title' => array(
+      'rdf properties' => array('http://schema.org/title'),
+    ),
+
+    'node:event:field_address' => array(
+      'rdf_types' => array('http://schema.org/PostalAddress'),
+      'rdf properties' => array('http://schema.org/address'),
+    ),
+    'node:event:field_address:thoroughfare' => array(
+      'rdf properties' => array('http://schema.org/streetAddress'),
+    ),
+    'node:event:field_address:locality' => array(
+      'rdf properties' => array('http://schema.org/addressLocality'),
+    ),
+    'node:event:field_address:administrative_area' => array(
+      'rdf properties' => array('http://schema.org/addressRegion'),
+    ),
+    'node:event:field_address:postal_code' => array(
+      'rdf properties' => array('http://schema.org/postalCode'),
+    ),
+    'node:event:field_address:country' => array(
+      'rdf properties' => array('http://schema.org/addressCountry'),
+    ),
+
+    'node:event:field_link:title' => array(
+      'rdf properties' => array('http://schema.org/linkname'),
+    ),
+    'node:event:field_link:url' => array(
+      'rdf properties' => array('http://schema.org/url'),
+    ),
+  );
+}
