@@ -15,6 +15,17 @@ function entity_rdf_entity_property_info_alter(&$info) {
   // Loop through all entity types and associate an RDF mapping to each
   // property, field, and field property.
   foreach ($info as $entity_type => &$entity_info) {
+    foreach ($entity_info['properties'] as $property => &$property_info) {
+      // Attach RDF mapping for each property info.
+      $key = implode(':', array($entity_type, $property));
+      if (!empty($mappings[$key])) {
+        $property_info['rdf mapping'] = $mappings[$key];
+      }
+      else {
+        $property_info['rdf mapping'] = array('properties' => array('http://ex.org/e'));
+      }
+    }
+
     if (!empty($entity_info['bundles'])) {
       foreach ($entity_info['bundles'] as $bundle => &$bundle_info) {
         foreach ($bundle_info['properties'] as $field => &$field_info) {
