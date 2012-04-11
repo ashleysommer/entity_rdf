@@ -79,3 +79,38 @@ function _entity_rdf_mappings() {
     ),
   );
 }
+
+// Another idea for structure (similar to D7 core). (not used for now)
+// Entity API doesn't use # keys so I'm hesitant to introduce them.
+// # would be used on rdf_types and rdf_properties.
+// We nest the field property info inside the top mapping for the field, reusing
+// the same key as Entity API for compound fields: 'property info'.
+function _entity_rdf_mappings2() {
+  return array(
+    'node' => array(
+      'event' => array(
+        'field_address' => array(
+          'rdf types' => array('http://schema.org/PostalAddress'),
+          'rdf properties' => array('http://schema.org/address'),
+          'property info' => array(
+            'thoroughfare' => array(
+              'rdf properties' => array('http://schema.org/streetAddress'),
+            ),
+            'locality' => array(
+              'rdf properties' => array('http://schema.org/addressLocality'),
+            ),
+            'administrative_area' => array(
+              'rdf properties' => array('http://schema.org/addressRegion'),
+            ),
+            'postal_code' => array(
+              'rdf properties' => array('http://schema.org/postalCode'),
+            ),
+            'country' => array(
+              'rdf properties' => array('http://schema.org/addressCountry'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
