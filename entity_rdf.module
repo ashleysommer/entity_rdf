@@ -49,6 +49,11 @@ function entity_rdf_entity_property_info_alter(&$info) {
   }
 }
 
+// Mappings are visible in both:
+// entity_metadata_wrapper('node', 1)->getPropertyInfo()
+// entity_get_property_info('node')
+
+
 // Dummy function to store the mappings until a better structure is defined.
 // @todo find a perfect structure that is exportable. granularity should
 // probably go to the field level.
@@ -62,6 +67,7 @@ function _entity_rdf_mappings() {
       'rdf properties' => array('http://schema.org/title'),
     ),
 
+    // addressfield example
     'node:event:field_address' => array(
       'rdf_types' => array('http://schema.org/PostalAddress'),
       'rdf properties' => array('http://schema.org/address'),
@@ -82,11 +88,20 @@ function _entity_rdf_mappings() {
       'rdf properties' => array('http://schema.org/addressCountry'),
     ),
 
+    // Link field example
     'node:event:field_link:title' => array(
       'rdf properties' => array('http://schema.org/linkname'),
     ),
     'node:event:field_link:url' => array(
       'rdf properties' => array('http://schema.org/url'),
+    ),
+
+    // Image field example
+    'node:event:field_image:file' => array(
+      'rdf properties' => array('http://schema.org/image'),
+    ),
+    'node:event:field_image:alt' => array(
+      'rdf properties' => array('http://schema.org/description'),
     ),
   );
 }
