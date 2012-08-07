@@ -45,7 +45,7 @@ function entity_rdf_entity_property_info_alter(&$info) {
           // for each bundle. Entity API will merge these together.
           $key = implode(':', array($entity_type, $bundle, $property));
           if (!empty($mappings[$key])) {
-            $bundle_info['properties'][$property] = $mappings[$key];
+            $bundle_info['properties'][$property]['rdf mapping'] = $mappings[$key];
           }
         }
       }
@@ -105,7 +105,7 @@ function _entity_rdf_mappings() {
         'title' => array(
           'rdf properties' => array('http://schema.org/name'),
         ),
-        'title' => array(
+        'url' => array(
           'rdf properties' => array('http://schema.org/url'),
         ),
       ),
