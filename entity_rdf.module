@@ -12,36 +12,40 @@ function entity_rdf_entity_property_info_alter(&$info) {
   // Use dummy mappings for testing.
   $mappings = _entity_rdf_mappings();
 
-  // Loop through all entity types and associate an RDF mapping to each
-  // property, field, and field property.
+  // Loop through all entity types and attach an RDF mapping to each property,
+  // field, and field property if such mapping exists.
   foreach ($info as $entity_type => &$entity_info) {
-    foreach ($entity_info['properties'] as $property => &$property_info) {
-      // Attach RDF mapping for each property info.
-      $key = implode(':', array($entity_type, $property));
-      if (!empty($mappings[$key])) {
-        $property_info['rdf mapping'] = $mappings[$key];
-      }
-      else {
-        $property_info['rdf mapping'] = array('properties' => array('http://ex.org/e'));
-      }
-    }
-
     if (!empty($entity_info['bundles'])) {
       foreach ($entity_info['bundles'] as $bundle => &$bundle_info) {
+        // Go through each field and see if there exists an RDF mapping for it.
         foreach ($bundle_info['properties'] as $field => &$field_info) {
           // Attach RDF mapping for the field.
           $key = implode(':', array($entity_type, $bundle, $field));
           if (!empty($mappings[$key])) {
             $field_info['rdf mapping'] = $mappings[$key];
+            unset($field_info['rdf mapping']['field properties']);
           }
           // Attach RDF mapping for each field property.
           if (!empty($field_info['property info'])) {
             foreach ($field_info['property info'] as $field_property => &$field_property_info) {
-              $key = implode(':', array($entity_type, $bundle, $field, $field_property));
-              if (!empty($mappings[$key])) {
-                $field_property_info['rdf mapping'] = $mappings[$key];
+              if (!empty($mappings[$key]['field properties'][$field_property])) {
+                $field_property_info['rdf mapping'] = $mappings[$key]['field properties'][$field_property];
               }
             }
+          }
+        }
+
+        // Go through each property and see if there exists an RDF mapping.
+        foreach ($entity_info['properties'] as $property => $property_info) {
+          // Each entity type property can have an RDF mapping that is specific
+          // to a particular bundle. For example the mapping of the title for
+          // an 'article' content type might differ from the title mapping
+          // of a 'person' content type. Although entity type properties are
+          // defined at the level of the entity type, they can be overridden
+          // for each bundle. Entity API will merge these together.
+          $key = implode(':', array($entity_type, $bundle, $property));
+          if (!empty($mappings[$key])) {
+            $bundle_info['properties'][$property] = $mappings[$key];
           }
         }
       }
@@ -56,52 +60,67 @@ function entity_rdf_entity_property_info_alter(&$info) {
 
 // Dummy function to store the mappings until a better structure is defined.
 // @todo find a perfect structure that is exportable. granularity should
-// probably go to the field level.
-// @debate using rdf_properties to distinguish from all the other references to
+// probably go to the field level. @see http://drupal.org/node/1712982
+// @debate using rdf properties to distinguish from all the other references to
 // properties we have in Drupal... predicate is what's used in D7 but that
 // terminology may be too obscure for developers, though on the other hand
 // it's a clear way to differentiate from the overly used 'properties'.
 function _entity_rdf_mappings() {
   return array(
-    'node:title' => array(
-      'rdf properties' => array('http://schema.org/title'),
+    // different mappings for the node title in 2 bundles
+    'node:event:title' => array(
+      'rdf properties' => array('http://schema.org/eventname'),
     ),
+    'node:article:title' => array(
+      'rdf properties' => array('http://schema.org/articletitle'),
+    ),
+
 
     // addressfield example
     'node:event:field_address' => array(
-      'rdf_types' => array('http://schema.org/PostalAddress'),
+      'rdf types' => array('http://schema.org/PostalAddress'),
       'rdf properties' => array('http://schema.org/address'),
-    ),
-    'node:event:field_address:thoroughfare' => array(
-      'rdf properties' => array('http://schema.org/streetAddress'),
-    ),
-    'node:event:field_address:locality' => array(
-      'rdf properties' => array('http://schema.org/addressLocality'),
-    ),
-    'node:event:field_address:administrative_area' => array(
-      'rdf properties' => array('http://schema.org/addressRegion'),
-    ),
-    'node:event:field_address:postal_code' => array(
-      'rdf properties' => array('http://schema.org/postalCode'),
-    ),
-    'node:event:field_address:country' => array(
-      'rdf properties' => array('http://schema.org/addressCountry'),
+      'field properties' => array(
+        'thoroughfare' => array(
+          'rdf properties' => array('http://schema.org/streetAddress'),
+        ),
+        'locality' => array(
+          'rdf properties' => array('http://schema.org/addressLocality'),
+        ),
+        'administrative_area' => array(
+          'rdf properties' => array('http://schema.org/addressRegion'),
+        ),
+        'postal_code' => array(
+          'rdf properties' => array('http://schema.org/postalCode'),
+        ),
+        'country' => array(
+          'rdf properties' => array('http://schema.org/addressCountry'),
+        ),
+      ),
     ),
 
     // Link field example
-    'node:event:field_link:title' => array(
-      'rdf properties' => array('http://schema.org/linkname'),
-    ),
-    'node:event:field_link:url' => array(
-      'rdf properties' => array('http://schema.org/url'),
+    'node:event:field_link' => array(
+      'field properties' => array(
+        'title' => array(
+          'rdf properties' => array('http://schema.org/name'),
+        ),
+        'title' => array(
+          'rdf properties' => array('http://schema.org/url'),
+        ),
+      ),
     ),
 
     // Image field example
-    'node:event:field_image:file' => array(
-      'rdf properties' => array('http://schema.org/image'),
-    ),
-    'node:event:field_image:alt' => array(
-      'rdf properties' => array('http://schema.org/description'),
+    'node:event:field_image' => array(
+      'field properties' => array(
+        'file' => array(
+          'rdf properties' => array('http://schema.org/image'),
+        ),
+        'alt' => array(
+          'rdf properties' => array('http://schema.org/description'),
+        ),
+      ),
     ),
   );
 }
@@ -118,7 +137,7 @@ function _entity_rdf_mappings2() {
         'field_address' => array(
           'rdf types' => array('http://schema.org/PostalAddress'),
           'rdf properties' => array('http://schema.org/address'),
-          'property info' => array(
+          'field properties' => array(
             'thoroughfare' => array(
               'rdf properties' => array('http://schema.org/streetAddress'),
             ),
