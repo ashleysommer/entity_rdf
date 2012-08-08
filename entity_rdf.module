@@ -72,23 +72,13 @@ function entity_rdf_entity_property_info_alter(&$info) {
 // it's a clear way to differentiate from the overly used 'properties'.
 function _entity_rdf_mappings() {
   return array(
-    // different mappings for the node title in 2 bundles
-    'node:event:title' => array(
-      'rdf properties' => array('http://schema.org/eventname'),
-    ),
-    'node:article:title' => array(
-      'rdf properties' => array('http://schema.org/articletitle'),
-    ),
-
-    // RDF type example for a content type
+    // node event mappings (entity type, property and field property).
     'node:event' => array(
       'rdf types' => array('http://schema.org/Event'),
     ),
-    'file:file' => array(
-      'rdf types' => array('http://schema.org/File'),
+    'node:event:title' => array(
+      'rdf properties' => array('http://schema.org/eventname'),
     ),
-
-
     // addressfield example
     'node:event:field_address' => array(
       'rdf types' => array('http://schema.org/PostalAddress'),
@@ -111,7 +101,6 @@ function _entity_rdf_mappings() {
         ),
       ),
     ),
-
     // Link field example
     'node:event:field_link' => array(
       'field properties' => array(
@@ -123,7 +112,6 @@ function _entity_rdf_mappings() {
         ),
       ),
     ),
-
     // Image field example
     'node:event:field_image' => array(
       'field properties' => array(
@@ -135,6 +123,22 @@ function _entity_rdf_mappings() {
         ),
       ),
     ),
+
+    // Comment mappings (entity type, property and field property).
+    'comment:comment_node_event' => array(
+      'rdf types' => array('http://schema.org/Comment'),
+    ),
+    'comment:comment_node_event:subject' => array(
+      'rdf properties' => array('http://schema.org/articletitle'),
+    ),
+    'comment:comment_node_event:comment_body' => array(
+      'field properties' => array(
+        'value' => array(
+          'rdf properties' => array('http://schema.org/body'),
+        ),
+      ),
+    ),
+
   );
 }
 
