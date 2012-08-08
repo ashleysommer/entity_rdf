@@ -17,6 +17,11 @@ function entity_rdf_entity_property_info_alter(&$info) {
   foreach ($info as $entity_type => &$entity_info) {
     if (!empty($entity_info['bundles'])) {
       foreach ($entity_info['bundles'] as $bundle => &$bundle_info) {
+        // Attach RDF mapping for the bundle (typically RDF types).
+        $key = implode(':', array($entity_type, $bundle));
+        if (!empty($mappings[$key])) {
+          $bundle_info['rdf mapping'] = $mappings[$key];
+        }
         // Go through each field and see if there exists an RDF mapping for it.
         foreach ($bundle_info['properties'] as $field => &$field_info) {
           // Attach RDF mapping for the field.
@@ -73,6 +78,14 @@ function _entity_rdf_mappings() {
     ),
     'node:article:title' => array(
       'rdf properties' => array('http://schema.org/articletitle'),
+    ),
+
+    // RDF type example for a content type
+    'node:event' => array(
+      'rdf types' => array('http://schema.org/Event'),
+    ),
+    'file:file' => array(
+      'rdf types' => array('http://schema.org/File'),
     ),
 
 
