@@ -81,14 +81,17 @@ function entity_rdf_entity_property_info_alter(&$info) {
 // it's a clear way to differentiate from the overly used 'properties'.
 function _entity_rdf_mappings() {
   return array(
-    // node event mappings (entity type, property and field property).
+    // node event mappings (bundle, property and field property mappings).
     'node:event' => array(
       'rdf types' => array('http://schema.org/Event'),
     ),
     'node:event:title' => array(
       'rdf properties' => array('http://schema.org/eventname'),
     ),
-    // addressfield example
+    'node:event:author' => array(
+      'rdf properties' => array('http://schema.org/author'),
+    ),
+    // addressfield example including field properties mapping.
     'node:event:field_address' => array(
       'rdf types' => array('http://schema.org/PostalAddress'),
       'rdf properties' => array('http://schema.org/address'),
@@ -110,7 +113,7 @@ function _entity_rdf_mappings() {
         ),
       ),
     ),
-    // Link field example
+    // Link field example including field properties mapping.
     'node:event:field_link' => array(
       'field properties' => array(
         'title' => array(
@@ -121,31 +124,46 @@ function _entity_rdf_mappings() {
         ),
       ),
     ),
-    // Image field example
+    // entityreference field example including field properties mapping.
+    'node:event:field_related_article' => array(
+      'rdf properties' => array('http://schema.org/related'),
+    ),
+    // Image field example including field properties mapping.
     'node:event:field_image' => array(
+      'rdf properties' => array('http://schema.org/image'),
+      'rdf types' => array('http://schema.org/Image'),
+      'rdf resource' => '[node:field_image]',
       'field properties' => array(
-        'file' => array(
-          'rdf properties' => array('http://schema.org/image'),
-        ),
         'alt' => array(
           'rdf properties' => array('http://schema.org/description'),
         ),
       ),
     ),
 
-    // Comment mappings (entity type, property and field property).
+    // Comment mappings.
+    // Bundle mapping.
     'comment:comment_node_event' => array(
       'rdf types' => array('http://schema.org/Comment'),
     ),
+    // Property mapping.
     'comment:comment_node_event:subject' => array(
       'rdf properties' => array('http://schema.org/articletitle'),
     ),
+    // Field mapping.
     'comment:comment_node_event:comment_body' => array(
       'field properties' => array(
         'value' => array(
           'rdf properties' => array('http://schema.org/body'),
         ),
       ),
+    ),
+
+    // file mappings
+    'file:file' => array(
+      'rdf types' => array('http://schema.org/File'),
+    ),
+    'file:file:name' => array(
+      'rdf properties' => array('http://schema.org/filename'),
     ),
 
   );
