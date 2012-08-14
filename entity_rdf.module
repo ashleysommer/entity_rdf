@@ -82,6 +82,31 @@ function entity_rdf_entity_property_info_alter(&$info) {
 function _entity_rdf_mappings() {
   return array(
     // node event mappings (bundle, property and field property mappings).
+    'node:article' => array(
+      'rdf types' => array('http://schema.org/NewsArticle'),
+    ),
+    'node:article:title' => array(
+      'rdf properties' => array('http://schema.org/name', 'http://schema.org/name2'),
+    ),
+    'node:article:author' => array(
+      'rdf properties' => array('http://schema.org/creator'),
+    ),
+    'node:article:body' => array(
+      'field properties' => array(
+        'value' => array(
+          'rdf properties' => array('http://schema.org/articleBody'),
+        ),
+      ),
+    ),
+    'node:article:field_tags' => array(
+      'rdf properties' => array('http://schema.org/keyword'),
+    ),
+    'node:article:field_cuisine' => array(
+      'rdf properties' => array('http://schema.org/cuisine'),
+      'rdf resource' => '[node:field-cuisine:field-wikipedia-url:url]',
+    ),
+
+    // node event mappings (bundle, property and field property mappings).
     'node:event' => array(
       'rdf types' => array('http://schema.org/Event'),
     ),
@@ -90,6 +115,25 @@ function _entity_rdf_mappings() {
     ),
     'node:event:author' => array(
       'rdf properties' => array('http://schema.org/author'),
+    ),
+    'node:event:field_date' => array(
+      'rdf properties' => array('http://schema.org/startDate'),
+      'rdf value callback' => 'date_iso8601',
+      'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
+    ),
+    'node:event:field_date2' => array(
+      'field properties' => array(
+        'value' => array(
+          'rdf properties' => array('http://schema.org/startDate'),
+          'rdf value callback' => 'date_iso8601',
+          'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
+        ),
+        'value2' => array(
+          'rdf properties' => array('http://schema.org/endDate'),
+          'rdf value callback' => 'date_iso8601',
+          'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
+        ),
+      ),
     ),
     // addressfield example including field properties mapping.
     'node:event:field_address' => array(
