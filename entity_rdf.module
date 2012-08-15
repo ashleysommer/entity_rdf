@@ -9,8 +9,8 @@
  * Implements hook_entity_property_info_alter().
  */
 function entity_rdf_entity_property_info_alter(&$info) {
-  // Use dummy mappings for testing.
-  $mappings = _entity_rdf_mappings();
+  // Collect all mappings declared by modules.
+  $mappings = module_invoke_all('entity_rdf_mappings');
 
   // Loop through all entity types and attach an RDF mapping to each property,
   // field, and field property if such mapping exists.
@@ -79,7 +79,7 @@ function entity_rdf_entity_property_info_alter(&$info) {
 // properties we have in Drupal... predicate is what's used in D7 but that
 // terminology may be too obscure for developers, though on the other hand
 // it's a clear way to differentiate from the overly used 'properties'.
-function _entity_rdf_mappings() {
+function entity_rdf_entity_rdf_mappings() {
   return array(
     // node event mappings (bundle, property and field property mappings).
     'node:article' => array(
