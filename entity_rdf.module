@@ -90,6 +90,12 @@ function _entity_rdf_mappings() {
     ),
     'node:article:author' => array(
       'rdf properties' => array('http://schema.org/creator'),
+      'rdf value' => '[node:author:name]',
+    ),
+    'node:article:created' => array(
+      'rdf properties' => array('http://schema.org/created'),
+      'rdf value callback' => 'date_iso8601',
+      'rdf value datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime',
     ),
     'node:article:body' => array(
       'field properties' => array(
