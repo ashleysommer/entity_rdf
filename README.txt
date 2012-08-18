@@ -9,3 +9,9 @@ The Entity RDF module attempts to solve some of the issues and shortcomings of t
 - RDF mappings are no longer carried around in the entity object (the stucture info is separate from the data)
 - RDF mappings are available in the entity metadata wrapper
 - Default RDF mappings are no longer automatically set for common properties, but instead they need to be enabled. Suggestions for mappings can be provided to the administrator setting the mappings.
+
+
+
+Mappings are visible Entity API's property info, for example:
+entity_metadata_wrapper('node', 1)->getPropertyInfo();
+entity_get_property_info('node');
