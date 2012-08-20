@@ -15,7 +15,7 @@ class EntityRdfMappingHookTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('entity_rdf', 'entity_rdf_test');
+    parent::setUp('entity', 'entity_rdf', 'entity_rdf_test');
   }
 
   /**
