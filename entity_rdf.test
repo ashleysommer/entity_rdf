@@ -25,6 +25,14 @@ class EntityRdfMappingHookTestCase extends DrupalWebTestCase {
     // Creates node of type article.
     $node = $this->drupalCreateNode(array('type' => 'article', 'promote' => 1));
 
+    // Loads RDF types from entity property info.
+    $entity_info = entity_get_property_info('node');
+    // Checks that the RDF types mappings are present.
+    $expected = array(
+      'rdf types' => array('http://schema.org/NewsArticle'),
+    );
+    $this->assertIdentical($entity_info['bundles']['article']['rdf mapping'], $expected, t('Found expected RDF types for article bundle.'));
+
     // Loads property info for the node.
     $info = entity_metadata_wrapper('node', 1)->getPropertyInfo();
 
