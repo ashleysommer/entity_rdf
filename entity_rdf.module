@@ -10,7 +10,7 @@
  */
 function entity_rdf_entity_property_info_alter(&$info) {
   // Collect all mappings declared by modules.
-  $mappings = module_invoke_all('entity_rdf_mappings');
+  $mappings = \Drupal::moduleHandler()->invokeAll('entity_rdf_mappings');
 
   // Loop through all entity types and attach an RDF mapping to each property,
   // field, and field property if such mapping exists.

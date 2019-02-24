@@ -1,0 +1,8 @@
+name: 'Entity RDF'
+type: module
+description: 'Describes entity properties in RDF.'
+core: 8.x
+package: 'RDF'
+version: VERSION
+dependencies:
+  - drupal:entity
